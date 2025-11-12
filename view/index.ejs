@@ -1,0 +1,344 @@
+<%- include('partials/sidebar') %>
+
+<style>
+  .modal-content {
+    background: #f9fdfb;
+    border: 2px solid #28a745;
+    animation: popScale 0.3s ease;
+  }
+
+  @keyframes popScale {
+    0% {
+      transform: scale(0.7);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .card.h-100 {
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+
+  .card.h-100:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .card .fa-2x {
+    transition: transform 0.3s ease;
+  }
+
+  .card:hover .fa-2x {
+    transform: scale(1.2);
+  }
+</style>
+
+<!-- Content Wrapper -->
+<div id="content-wrapper" class="d-flex flex-column">
+  <div id="content">
+    <!-- Header -->
+    <%- include('partials/header') %>
+
+    <!-- Main Container -->
+    <div class="container-fluid" id="container-wrapper">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="./">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+        </ol>
+      </div>
+
+<% if (success) { %>
+  <!-- Success Modal -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content success-modal-content">
+        <div class="modal-body text-center">
+          <!-- Animated Success Icon -->
+          <div class="success-image-wrapper mb-3">
+            <img src="https://res.cloudinary.com/madimages/image/fetch/e_sharpen:100,q_auto:eco,fl_progressive:semi/https://s3.amazonaws.com/mobileappdaily/mad/uploads/img_best_ride_sharing_apps.webp" alt="Success" class="img-fluid">
+          </div>
+          <h4 class="text-success fw-bold mb-2">Welcome, <%= admin.name %>!</h4>
+          <p class="text-muted mb-0"><%= success %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Success Modal Custom Styles -->
+  <style>
+    .success-modal-content{
+      background: #f9fdfb;
+      border: 2px solid #28a745;
+      border-radius: 16px;
+      padding: 30px 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      animation: zoomInSuccess 0.35s ease-out;
+    }
+
+    @keyframes zoomInSuccess {
+      0% {
+        transform: scale(0.6);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .success-image-wrapper {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto;
+      background-color: #e6f7ec;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .success-image-wrapper img {
+      width: 70px;
+      height: 70px;
+    }
+
+    .modal-body h4 {
+      font-size: 1.25rem;
+      color: #28a745;
+    }
+
+    .modal-body p {
+      font-size: 0.95rem;
+      color: #6c757d;
+    }
+  </style>
+
+  <!-- Modal Auto Show Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const modal = new bootstrap.Modal(document.getElementById('successModal'));
+      modal.show();
+      setTimeout(() => {
+        modal.hide();
+      }, 2500); 
+    });
+  </script>
+<% } %>
+
+<!-- Dashboard Cards -->
+<div class="row mb-3">
+<!-- Total Users -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <a href="/users" class="text-decoration-none d-block">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Users</div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800"><%= dashboardData.total_user || 0 %></div>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-users fa-2x text-primary"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
+
+<!-- Active Users -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <div class="card h-100">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col mr-2">
+          <div class="text-xs font-weight-bold text-uppercase mb-1">Active Users</div>
+          <div class="h5 mb-0 font-weight-bold text-gray-800"><%= dashboardData.active_user || 0 %></div>
+        </div>
+        <div class="col-auto">
+          <i class="fas fa-user-check fa-2x text-success"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Inactive Users -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <div class="card h-100">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col mr-2">
+          <div class="text-xs font-weight-bold text-uppercase mb-1">Inactive Users</div>
+          <div class="h5 mb-0 font-weight-bold text-gray-800"><%= dashboardData.inactive_user || 0 %></div>
+        </div>
+        <div class="col-auto">
+          <i class="fas fa-user-times fa-2x text-danger"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Total Rides -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <a href="/ride-details" class="text-decoration-none d-block">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Rides</div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800"><%= dashboardData.total_ride || 0 %></div>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-car fa-2x text-success"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
+
+<!-- Ride Placed -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <div class="card h-100">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col mr-2">
+          <div class="text-xs font-weight-bold text-uppercase mb-1">Ride Placed</div>
+          <div class="h5 mb-0 font-weight-bold text-gray-800"><%= dashboardData.ride_placed || 0 %></div>
+        </div>
+        <div class="col-auto">
+          <i class="fas fa-clipboard-check fa-2x text-info"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ride On Going -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <div class="card h-100">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col mr-2">
+          <div class="text-xs font-weight-bold text-uppercase mb-1">Ride On Going</div>
+          <div class="h5 mb-0 font-weight-bold text-gray-800"><%= dashboardData.ride_on_going || 0 %></div>
+        </div>
+        <div class="col-auto">
+          <i class="fas fa-car-side fa-2x text-warning"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ride Completed -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <div class="card h-100">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col mr-2">
+          <div class="text-xs font-weight-bold text-uppercase mb-1">Ride Completed</div>
+          <div class="h5 mb-0 font-weight-bold text-gray-800"><%= dashboardData.ride_completed || 0 %></div>
+        </div>
+        <div class="col-auto">
+          <i class="fas fa-flag-checkered fa-2x text-success"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Total Ride Bookings -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <a href="/ridebooking_details" class="text-decoration-none d-block">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Rides Booking</div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800"><%= dashboardData.total_ride_booking || 0 %></div>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-route fa-2x text-info"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
+
+<!-- Pending Requests -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <div class="card h-100">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col mr-2">
+          <div class="text-xs font-weight-bold text-uppercase mb-1">Pending Requests</div>
+          <div class="h5 mb-0 font-weight-bold text-gray-800"><%= dashboardData.pending_requests || 0 %></div>
+        </div>
+        <div class="col-auto">
+          <i class="fas fa-clock fa-2x text-warning"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Total Earnings -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <a href="/Payment" class="text-decoration-none d-block">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Earnings</div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800">₹ <%= dashboardData.total_earnings || 0 %></div>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-wallet fa-2x text-success"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
+
+<!-- Total Admin Commission -->
+<div class="col-xl-3 col-md-6 mb-4">
+  <a href="/Payment" class="text-decoration-none d-block">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Admin Commission</div>
+            <div class="h5 mb-0 font-weight-bold text-gray-800">₹ <%= dashboardData.total_admin_commission || 0 %></div>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-hand-holding-usd fa-2x text-primary"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
+
+	
+	
+	
+	
+      </div> <!-- end row -->
+    </div> <!-- end container-fluid -->
+
+    <!-- Footer -->
+    <%- include('partials/footer') %>
+  </div>
+</div>

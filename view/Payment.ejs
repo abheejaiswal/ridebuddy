@@ -1,0 +1,224 @@
+<%- include('partials/sidebar') %>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
+<style>
+  /* Hover effect on table rows */
+  .table-hover tbody tr:hover {
+    background-color: #f0f8ff !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Zebra striping */
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+
+  /* Stylish table headers */
+  .thead-light th {
+    background-color: #e9ecef;
+    font-weight: 600;
+    color: #495057;
+  }
+
+  /* Table styling */
+  .table td, .table th {
+    vertical-align: middle;
+    padding: 12px;
+  }
+
+  /* Badge style overrides */
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.4em 0.65em;
+    border-radius: 0.35rem;
+  }
+
+  /* Card hover effect */
+  .card:hover {
+    box-shadow: 0 0 15px rgba(0,0,0,0.08);
+    transition: 0.3s ease;
+  }
+
+  /* DataTables Pagination Styling (Ride Share Style) */
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #f8f9fc;
+    border: 1px solid #dee2e6;
+    padding: 6px 12px;
+    margin: 0 2px;
+    color: #4e73df !important;
+    border-radius: 0.35rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+  .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #4e73df !important;
+    color: #fff !important;
+    border: 1px solid #4e73df;
+  }
+
+  .dataTables_wrapper .dataTables_paginate {
+    margin-top: 10px;
+    text-align: right;
+  }
+
+  .dataTables_info {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 10px;
+  }
+
+  .dataTables_length label,
+  .dataTables_filter label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #343a40;
+  }
+
+  .dataTables_filter input {
+    border-radius: 0.35rem;
+    padding: 4px 10px;
+    border: 1px solid #ced4da;
+  }
+</style>
+
+<div id="content-wrapper" class="d-flex flex-column">
+  <div id="content">
+    <%- include('partials/header') %>
+
+    <div class="container-fluid" id="container-wrapper">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Payment Details</h1>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 mb-4">
+          <div class="card">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">All Payment List</h6> 
+            </div>
+
+            <div class="table-responsive p-3">
+              <table class="table table-hover table-striped align-items-center table-flush" id="vehicleTable">
+                <thead class="thead-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Ride ID</th>
+                    <th>Driver ID</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Distance (km)</th>
+                    <th>Amount</th>
+                    <th>Payment Mode</th>
+                    <th>Admin Commission</th>
+                    <th>Driver Earning</th>
+                    <th>Transaction ID</th>
+                    <th>Payment Status</th>
+                   
+                    <th>Created At</th>
+                   
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (documents && documents.length > 0) { %>
+                    <% documents.forEach((ride) => { %>
+                      <tr>
+                        <td><%= ride.id %></td>
+                        <td><%= ride.user_name || ride.user_id %></td>
+                        <td><%= ride.ride_name || ride.ride_id %></td>
+                        <td><%= ride.driver_name %></td>
+                        <td><%= ride.from_address || '-' %></td>
+                        <td><%= ride.to_address || '-' %></td>
+                        <td><%= ride.distance_km || '-' %></td>
+                        <td>₹<%= parseFloat(ride.amount || 0).toFixed(2) %></td>
+                        <td>
+                          <% if (ride.payment_mode == 0) { %>
+                            <span class="badge badge-info">
+                              <i class="fa fa-money-bill-wave"></i> COD
+                            </span>
+                          <% } else if (ride.payment_mode == 1) { %>
+                            <span class="badge badge-primary">
+                              <i class="fa fa-credit-card"></i> Online
+                            </span>
+                          <% } else { %>
+                            <span class="badge badge-secondary">
+                              <i class="fa fa-question-circle"></i> Unknown
+                            </span>
+                          <% } %>
+                        </td>
+                        <td>₹<%= parseFloat(ride.admin_commission || 0).toFixed(2) %></td>
+                        <td>₹<%= parseFloat(ride.driver_earning || 0).toFixed(2) %></td>
+                        <td><%= ride.transaction_id || '-' %></td>
+                        <td>
+                          <% if (ride.payment_status == 0) { %>
+                            <span class="badge badge-warning">
+                              <i class="fa fa-clock"></i> Pending
+                            </span>
+                          <% } else if (ride.payment_status == 1) { %>
+                            <span class="badge badge-success">
+                              <i class="fa fa-check-circle"></i> Success
+                            </span>
+                          <% } else if (ride.payment_status == 2) { %>
+                            <span class="badge badge-danger">
+                              <i class="fa fa-times-circle"></i> Failed
+                            </span>
+                          <% } else { %>
+                            <span class="badge badge-secondary">
+                              <i class="fa fa-question-circle"></i> Unknown
+                            </span>
+                          <% } %>
+                        </td>
+                        
+                        <td><%= new Date(ride.created_at).toLocaleString() %></td>
+                       
+                      </tr>
+                    <% }) %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="16" class="text-center">No payment records found.</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+  </div>
+</div>
+
+<!-- jQuery and DataTables Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- Initialize DataTable -->
+<script>
+  $(document).ready(function() {
+    $('#vehicleTable').DataTable({
+      "pageLength": 10,
+      "lengthChange": true,
+      "ordering": true,
+      "searching": true,
+      "info": true,
+      "order": [[0, "desc"]],
+      "language": {
+        "search": "Search:",
+        "lengthMenu": "Show _MENU_ entries",
+        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+        "paginate": {
+          "previous": "Previous",
+          "next": "Next"
+        }
+      }
+    });
+  });
+</script>

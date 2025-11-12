@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agent Tree Table</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .table-hierarchy .collapse-row td {
+      padding-left: 40px;
+    }
+    .badge-role {
+      font-size: 0.85rem;
+      padding: 4px 8px;
+    }
+    .clickable {
+      cursor: pointer;
+    }
+    .nested-table td {
+      padding: 0.3rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container mt-4">
+  <h3 class="mb-4">🌐 Full Agent Tree Table</h3>
+
+  <table class="table table-bordered table-hover table-hierarchy">
+    <thead class="thead-dark">
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Parent</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- Country Agent -->
+      <tr data-toggle="collapse" data-target="#cityAgents1" class="clickable">
+        <td><i class="fa fa-globe text-primary mr-1"></i> India</td>
+        <td><span class="badge badge-primary badge-role">Country Agent</span></td>
+        <td>—</td>
+        <td><button class="btn btn-sm btn-info">View</button></td>
+      </tr>
+
+      <!-- City Agent -->
+      <tr id="cityAgents1" class="collapse collapse-row">
+        <td colspan="4">
+          <table class="table mb-0 nested-table">
+            <tr data-toggle="collapse" data-target="#superAgents1" class="clickable">
+              <td><i class="fa fa-building text-success mr-1"></i> Mumbai</td>
+              <td><span class="badge badge-success badge-role">City Agent</span></td>
+              <td>India</td>
+              <td><button class="btn btn-sm btn-info">View</button></td>
+            </tr>
+
+            <!-- Super Agent -->
+            <tr id="superAgents1" class="collapse collapse-row">
+              <td colspan="4">
+                <table class="table mb-0 nested-table">
+                  <tr data-toggle="collapse" data-target="#agents1" class="clickable">
+                    <td><i class="fa fa-star text-warning mr-1"></i> Super Agent A</td>
+                    <td><span class="badge badge-warning badge-role">Super Agent</span></td>
+                    <td>Mumbai</td>
+                    <td><button class="btn btn-sm btn-info">View</button></td>
+                  </tr>
+
+                  <!-- Agent -->
+                  <tr id="agents1" class="collapse collapse-row">
+                    <td colspan="4">
+                      <table class="table mb-0 nested-table">
+                        <tr data-toggle="collapse" data-target="#players1" class="clickable">
+                          <td><i class="fa fa-user text-info mr-1"></i> Agent Rahul</td>
+                          <td><span class="badge badge-info badge-role">Agent</span></td>
+                          <td>Super Agent A</td>
+                          <td><button class="btn btn-sm btn-info">View</button></td>
+                        </tr>
+
+                        <!-- Players -->
+                        <tr id="players1" class="collapse collapse-row">
+                          <td colspan="4">
+                            <table class="table mb-0 nested-table">
+                              <tr>
+                                <td><i class="fa fa-users text-muted mr-1"></i> Player 1</td>
+                                <td><span class="badge badge-secondary badge-role">Player</span></td>
+                                <td>Agent Rahul</td>
+                                <td><button class="btn btn-sm btn-info">View</button></td>
+                              </tr>
+                              <tr>
+                                <td><i class="fa fa-users text-muted mr-1"></i> Player 2</td>
+                                <td><span class="badge badge-secondary badge-role">Player</span></td>
+                                <td>Agent Rahul</td>
+                                <td><button class="btn btn-sm btn-info">View</button></td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+
+                      </table>
+                    </td>
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+
+      <!-- Another Country -->
+      <tr data-toggle="collapse" data-target="#cityAgents2" class="clickable">
+        <td><i class="fa fa-globe text-primary mr-1"></i> USA</td>
+        <td><span class="badge badge-primary badge-role">Country Agent</span></td>
+        <td>—</td>
+        <td><button class="btn btn-sm btn-info">View</button></td>
+      </tr>
+
+      <tr id="cityAgents2" class="collapse collapse-row">
+        <td colspan="4">
+          <table class="table mb-0 nested-table">
+            <tr>
+              <td><i class="fa fa-building text-success mr-1"></i> New York</td>
+              <td><span class="badge badge-success badge-role">City Agent</span></td>
+              <td>USA</td>
+              <td><button class="btn btn-sm btn-info">View</button></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+<script>
+  $('.clickable').css('cursor', 'pointer');
+</script>
+
+</body>
+</html>

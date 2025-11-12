@@ -1,0 +1,92 @@
+<%- include('partials/sidebar') %>
+
+<div id="content-wrapper" class="d-flex flex-column">
+  <div id="content">
+    <%- include('partials/header') %>
+
+    <div class="container-fluid" id="container-wrapper">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">User Document Details</h1>
+        <a href="/users" class="btn btn-secondary">← Back</a>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 mb-4">
+          <div class="card">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">Documents of User ID #<%= documents.user_id %></h6>
+            </div>
+
+            <div class="card-body">
+              <table class="table table-bordered">
+                <tbody>
+                  <tr>
+                    <th style="width: 200px;">Passport Photo</th>
+                    <td>
+                      <% if (documents.passport_photo) { %>
+                        <img src="<%= BASE_URL %><%= documents.passport_photo %>" width="200" class="img-thumbnail">
+                      <% } else { %>
+                        <span class="text-danger">Not Uploaded</span>
+                      <% } %>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>Aadhar Front</th>
+                    <td>
+                      <% if (documents.aadhar_photo) { %>
+                        <img src="<%= BASE_URL %><%= documents.aadhar_photo %>" width="200" class="img-thumbnail">
+                      <% } else { %>
+                        <span class="text-danger">Not Uploaded</span>
+                      <% } %>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>Aadhar Back</th>
+                    <td>
+                      <% if (documents.aadhar_back_photo) { %>
+                        <img src="<%= BASE_URL %><%= documents.aadhar_back_photo %>" width="200" class="img-thumbnail">
+                      <% } else { %>
+                        <span class="text-danger">Not Uploaded</span>
+                      <% } %>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>PAN Card</th>
+                    <td>
+                      <% if (documents.pan_photo) { %>
+                        <img src="<%= BASE_URL %><%= documents.pan_photo %>" width="200" class="img-thumbnail">
+                      <% } else { %>
+                        <span class="text-danger">Not Uploaded</span>
+                      <% } %>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>Uploaded On</th>
+                    <td>
+                      <%= new Date(documents.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      }) %>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="card-footer text-end">
+              <a href="/users" class="btn btn-outline-primary">Back to Users</a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+  </div>
+</div>

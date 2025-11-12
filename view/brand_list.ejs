@@ -1,0 +1,232 @@
+<%- include('partials/sidebar') %>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div id="content-wrapper" class="d-flex flex-column">
+  <div id="content">
+    <%- include('partials/header') %>
+
+    <div class="container-fluid" id="container-wrapper">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Brand List</h1>
+        
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 mb-4">
+          <div class="card">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+              <h6 class="m-0 font-weight-bold text-primary">All Brands</h6>
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBrandModal">Add Brand</button>
+            </div>
+
+            <div class="table-responsive p-3">
+              <table class="table table-hover table-striped align-items-center table-flush" id="brandTable">
+                <thead class="thead-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Brand Name</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="brandTableBody">
+                  <!-- Data will load here via AJAX -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+  </div>
+</div>
+
+<!-- Add Brand Modal -->
+<div class="modal fade" id="addBrandModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="addBrandForm" enctype="multipart/form-data">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Brand</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label>Brand Name</label>
+            <input type="text" name="brand_name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Brand Image</label>
+            <input type="file" name="image" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Add Brand</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Brand Modal -->
+<div class="modal fade" id="editBrandModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="editBrandForm" enctype="multipart/form-data">
+      <input type="hidden" name="brand_id">
+      <input type="hidden" name="old_image">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Brand</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label>Brand Name</label>
+            <input type="text" name="brand_name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Current Image</label>
+            <div>
+              <img id="currentImage" src="" width="80" height="80">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label>Change Image</label>
+            <input type="file" name="image" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Update Brand</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function() {
+
+  // Initialize DataTable with AJAX
+  const table = $('#brandTable').DataTable({
+    ajax: {
+      url: '/get_brands',
+      dataSrc: function(json) {
+        if (json.success && json.brands) {
+          return json.brands;
+        }
+        return [];
+      }
+    },
+    columns: [
+      { data: 'brand_id' },
+      { data: 'brand_name' },
+      {
+        data: 'image',
+        render: function(data) {
+          return data ? `<img src="${data}" width="50" height="50">` : '-';
+        }
+      },
+      {
+        data: null,
+        render: function(row) {
+          return `
+            <button class="btn btn-sm btn-warning edit-brand-btn"
+                    data-id="${row.brand_id}"
+                    data-name="${row.brand_name}"
+                    data-image="${row.image || ''}">Edit</button>
+            <button class="btn btn-sm btn-danger delete-brand-btn"
+                    data-id="${row.brand_id}">Delete</button>`;
+        }
+      }
+    ],
+    pageLength: 10,
+    lengthMenu: [5, 10, 25, 50, 100],
+    ordering: true,
+    info: true,
+    searching: true,
+    language: {
+      search: "Search:",
+      lengthMenu: "Show _MENU_ entries",
+      info: "Showing _START_ to _END_ of _TOTAL_ entries",
+      paginate: { previous: "Previous", next: "Next" }
+    }
+  });
+
+  // Refresh function
+  function refreshTable() {
+    table.ajax.reload(null, false);
+  }
+
+  // Add Brand
+  $('#addBrandForm').submit(function(e){
+    e.preventDefault();
+    const formData = new FormData(this);
+    $.ajax({
+      url: '/add_brand',
+      type: 'POST',
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function(res){
+        if(res.success){
+          $('#addBrandModal').modal('hide');
+          $('#addBrandForm')[0].reset();
+          refreshTable();
+        } else alert(res.message);
+      }
+    });
+  });
+
+  // Open Edit Modal
+  $(document).on('click', '.edit-brand-btn', function(){
+    const id = $(this).data('id');
+    const name = $(this).data('name');
+    const image = $(this).data('image');
+    $('#editBrandForm [name=brand_id]').val(id);
+    $('#editBrandForm [name=brand_name]').val(name);
+    $('#editBrandForm [name=old_image]').val(image);
+    $('#currentImage').attr('src', image || '');
+    $('#editBrandModal').modal('show');
+  });
+
+  // Update Brand
+  $('#editBrandForm').submit(function(e){
+    e.preventDefault();
+    const formData = new FormData(this);
+    $.ajax({
+      url: '/edit_brand',
+      type: 'POST',
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function(res){
+        if(res.success){
+          $('#editBrandModal').modal('hide');
+          $('#editBrandForm')[0].reset();
+          refreshTable();
+        } else alert(res.message);
+      }
+    });
+  });
+
+  // Delete Brand
+  $(document).on('click', '.delete-brand-btn', function(){
+    if(!confirm('Are you sure to delete this brand?')) return;
+    const brand_id = $(this).data('id');
+    $.post('/delete_brand', { brand_id }, function(res){
+      if(res.success){
+        refreshTable();
+      } else alert(res.message);
+    });
+  });
+});
+</script>

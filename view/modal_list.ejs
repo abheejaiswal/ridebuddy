@@ -1,0 +1,256 @@
+<%- include('partials/sidebar') %>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div id="content-wrapper" class="d-flex flex-column">
+  <div id="content">
+    <%- include('partials/header') %>
+
+    <div class="container-fluid" id="container-wrapper">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Model List</h1>
+        
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 mb-4">
+          <div class="card">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">All Models</h6>
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModelModal">Add Model</button>
+            </div>
+
+            <div class="table-responsive p-3">
+              <table class="table table-hover table-striped align-items-center table-flush" id="modelTable">
+                <thead class="thead-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Brand</th>
+                    <th>Model Name</th>
+                    <th>Category</th>
+                    <th>Transmission</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="modelTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+  </div>
+</div>
+
+<!-- Add Model Modal -->
+<div class="modal fade" id="addModelModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="addModelForm" enctype="multipart/form-data">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Model</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label>Brand</label>
+            <select name="brand_id" class="form-control" id="brandSelect"></select>
+          </div>
+          <div class="mb-3">
+            <label>Model Name</label>
+            <input type="text" name="model_name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Category</label>
+            <input type="text" name="category" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label>Transmission</label>
+            <input type="text" name="transmission" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label>Image</label>
+            <input type="file" name="image" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Add Model</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Model Modal -->
+<div class="modal fade" id="editModelModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="editModelForm" enctype="multipart/form-data">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Model</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="model_id" id="edit_model_id">
+          <input type="hidden" name="old_image" id="edit_old_image">
+          <div class="mb-3">
+            <label>Brand</label>
+            <select name="brand_id" class="form-control" id="edit_brandSelect"></select>
+          </div>
+          <div class="mb-3">
+            <label>Model Name</label>
+            <input type="text" name="model_name" id="edit_model_name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Category</label>
+            <input type="text" name="category" id="edit_category" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label>Transmission</label>
+            <input type="text" name="transmission" id="edit_transmission" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label>Image (optional)</label>
+            <input type="file" name="image" id="edit_image" class="form-control">
+            <img id="edit_preview" src="" class="mt-2" width="80" height="80" style="display:none;border-radius:8px;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Update Model</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function() {
+
+  // Load brands for both modals
+  function loadBrands(selectId) {
+    $.get('/get_brands', function(res) {
+      if(res.success && res.brands.length){
+        const select = $(selectId);
+        select.empty();
+        res.brands.forEach(b => {
+          select.append(`<option value="${b.brand_id}">${b.brand_name}</option>`);
+        });
+      }
+    });
+  }
+  loadBrands('#brandSelect');
+  loadBrands('#edit_brandSelect');
+
+  // Initialize DataTable
+  const table = $('#modelTable').DataTable({
+    ajax: {
+      url: '/get_modals',
+      dataSrc: json => (json.success && json.models) ? json.models : []
+    },
+    columns: [
+      { data: 'model_id' },
+      { data: 'brand_name' },
+      { data: 'model_name' },
+      { data: 'category' },
+      { data: 'transmission' },
+      {
+        data: 'image',
+        render: data => data ? `<img src="${data}" width="50" height="50">` : '-'
+      },
+      {
+        data: null,
+        render: row => `
+          <button class="btn btn-sm btn-warning edit-btn" data-id="${row.model_id}">Edit</button>
+          <button class="btn btn-sm btn-danger delete-btn" data-id="${row.model_id}">Delete</button>`
+      }
+    ]
+  });
+
+  function refreshTable() {
+    table.ajax.reload(null, false);
+  }
+
+  // Add Model
+  $('#addModelForm').submit(function(e){
+    e.preventDefault();
+    const formData = new FormData(this);
+    $.ajax({
+      url: '/add_modal',
+      type: 'POST',
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function(res){
+        if(res.success){
+          $('#addModelModal').modal('hide');
+          $('#addModelForm')[0].reset();
+          refreshTable();
+        } else alert(res.message);
+      }
+    });
+  });
+
+  // Delete Model
+  $(document).on('click', '.delete-btn', function(){
+    if(!confirm('Are you sure you want to delete this model?')) return;
+    const model_id = $(this).data('id');
+    $.post('/delete_modal', { model_id }, function(res){
+      if(res.success) refreshTable();
+      else alert(res.message);
+    });
+  });
+
+  // Edit Model
+  $(document).on('click', '.edit-btn', function(){
+    const rowData = table.row($(this).parents('tr')).data();
+    if(rowData){
+      $('#edit_model_id').val(rowData.model_id);
+      $('#edit_model_name').val(rowData.model_name);
+      $('#edit_category').val(rowData.category);
+      $('#edit_transmission').val(rowData.transmission);
+      $('#edit_brandSelect').val(rowData.brand_id);
+      $('#edit_old_image').val(rowData.image || '');
+      if(rowData.image){
+        $('#edit_preview').attr('src', rowData.image).show();
+      } else {
+        $('#edit_preview').hide();
+      }
+
+      const editModalEl = document.getElementById('editModelModal');
+      const modal = new bootstrap.Modal(editModalEl, { keyboard: false });
+      modal.show();
+    } else {
+      alert('Model data not found!');
+    }
+  });
+
+  // Update Model
+  $('#editModelForm').submit(function(e){
+    e.preventDefault();
+    const formData = new FormData(this);
+    $.ajax({
+      url: '/edit_modal', // fixed route
+      type: 'POST',
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function(res){
+        if(res.success){
+          $('#editModelModal').modal('hide');
+          refreshTable();
+        } else alert(res.message);
+      }
+    });
+  });
+
+});
+</script>

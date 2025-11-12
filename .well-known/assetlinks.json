@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.fc.share_ride",
+    "sha256_cert_fingerprints":
+    ["5C:11:DD:7E:C6:27:00:4D:12:00:93:58:D0:F2:AA:55:88:B3:36:23:64:A0:D8:48:09:59:60:3E:45:C3:23:CC"]
+  }
+}]

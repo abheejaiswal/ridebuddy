@@ -1,0 +1,180 @@
+<%- include('partials/sidebar') %>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
+<style>
+  /* Hover effect on table rows */
+  .table-hover tbody tr:hover {
+    background-color: #f0f8ff !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Zebra striping */
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+
+  /* Stylish table headers */
+  .thead-light th {
+    background-color: #e9ecef;
+    font-weight: 600;
+    color: #495057;
+  }
+
+  /* Table styling */
+  .table td, .table th {
+    vertical-align: middle;
+    padding: 12px;
+  }
+
+  /* Badge style overrides */
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.4em 0.65em;
+    border-radius: 0.35rem;
+  }
+
+  /* Card hover effect */
+  .card:hover {
+    box-shadow: 0 0 15px rgba(0,0,0,0.08);
+    transition: 0.3s ease;
+  }
+
+  /* DataTables Pagination Styling (Ride Share Style) */
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #f8f9fc;
+    border: 1px solid #dee2e6;
+    padding: 6px 12px;
+    margin: 0 2px;
+    color: #4e73df !important;
+    border-radius: 0.35rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+  .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #4e73df !important;
+    color: #fff !important;
+    border: 1px solid #4e73df;
+  }
+
+  .dataTables_wrapper .dataTables_paginate {
+    margin-top: 10px;
+    text-align: right;
+  }
+
+  .dataTables_info {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 10px;
+  }
+
+  .dataTables_length label,
+  .dataTables_filter label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #343a40;
+  }
+
+  .dataTables_filter input {
+    border-radius: 0.35rem;
+    padding: 4px 10px;
+    border: 1px solid #ced4da;
+  }
+</style>
+
+<div id="content-wrapper" class="d-flex flex-column">
+  <div id="content">
+    <%- include('partials/header') %>
+
+    <div class="container-fluid" id="container-wrapper">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Bank Details</h1>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 mb-4">
+          <div class="card">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">All BankDetails</h6> 
+            </div>
+
+            <div class="table-responsive p-3">
+              <table class="table table-hover table-striped align-items-center table-flush" id="vehicleTable">
+                              <thead class="thead-light">
+                  <tr>
+                    <th>#</th>
+                    <th>User ID</th>
+                    <th>Account Holder Name</th>
+                    <th>Bank Name</th>
+                    <th>Account Number</th>
+                    <th>IFSC Code</th>
+                    <th>Branch Name</th>
+                    <th>Created At</th>
+                    
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (documents && documents.length > 0) { %>
+                    <% documents.forEach((payment, index) => { %>
+                      <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= payment.user_name %></td>
+                        <td><%= payment.account_holder_name %></td>   
+                        <td><%=payment.bank_name%></td>
+                        <td><%=payment.account_number%></td>
+                        <td><%=payment.ifsc_code%></td>
+                        <td><%=payment.branch_name%></td>
+                        <td><%= new Date(payment.created_at).toLocaleString() %></td> 
+                        
+                        
+                      </tr>
+                    <% }) %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="8" class="text-center text-muted">No payment records found.</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+  </div>
+</div>
+
+<!-- jQuery and DataTables Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- Initialize DataTable -->
+<script>
+  $(document).ready(function() {
+    $('#vehicleTable').DataTable({
+      "pageLength": 10,
+      "lengthChange": true,
+      "ordering": true,
+      "searching": true,
+      "info": true,
+      "order": [[0, "desc"]], // Sort by first column (ID) descending
+      "language": {
+        "search": "Search:",
+        "lengthMenu": "Show _MENU_ entries",
+        "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+        "paginate": {
+          "previous": "Previous",
+          "next": "Next"
+        }
+      }
+    });
+  });
+</script>
+

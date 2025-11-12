@@ -1,0 +1,211 @@
+<style>
+/* Fixed header */
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background-color: #1e1e2f;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.navbar {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #ffffff;
+    transition: color 0.3s;
+}
+
+.navbar-nav .nav-item .nav-link:hover {
+    color: #00c3ff;
+}
+
+.dropdown-menu {
+    background-color: #252541;
+    border: none;
+    color: white;
+}
+
+.dropdown-menu .dropdown-item {
+    color: #e0e0e0;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #33334d;
+    color: #00c3ff;
+}
+
+.badge-counter {
+    font-size: 0.7rem;
+    background-color: #ff5252;
+    color: white;
+}
+
+.fas, .fa {
+    color: #ffffff;
+}
+
+.img-profile {
+    border: 2px solid #00c3ff;
+}
+
+.dropdown-item:hover i {
+    color: #00c3ff;
+}
+
+.navbar-search input {
+    border-color: #00c3ff;
+    background-color: #2a2a40;
+    color: white;
+}
+
+.navbar-search input::placeholder {
+    color: #aaa;
+}
+
+.navbar-search .btn {
+    background-color: #00c3ff;
+    border-color: #00c3ff;
+}
+
+.navbar-search .btn:hover {
+    background-color: #00aacc;
+}
+
+.navbar-brand img {
+    height: 100px;
+    width: auto;
+    margin-right: 12px;
+}
+
+.navbar-brand span {
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+body {
+    margin-top: 70px;
+}
+</style>
+
+<!-- ======== TOPBAR START ======== -->
+<header class="topbar" data-navbarbg="skin5">
+  <nav class="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top">
+
+    <!-- Logo (Brand) -->
+    <a class="navbar-brand d-flex align-items-center" href="/dashboard">
+      <img src="<%= BASE_URL %>img/logo/rideshare_logo.png" alt="Logo">
+      <span>RideShareAdmin</span>
+    </a>
+
+    <!-- Sidebar Toggle -->
+    <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
+      <i class="fa fa-bars"></i>
+    </button>
+
+    <!-- Right Side Navbar -->
+    <ul class="navbar-nav ml-auto">
+      <div class="topbar-divider d-none d-sm-block"></div>
+
+      <!-- User Dropdown -->
+      <li class="nav-item dropdown no-arrow">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <img class="img-profile rounded-circle" src="<%= BASE_URL %>img/boy.png" style="max-width: 60px">
+          <span class="ml-2 d-none d-lg-inline text-white small"><%= admin.name %></span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+          <a class="dropdown-item" href="#" id="openProfileModal">
+            <i class="fas fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
+            Change Password
+          </a>
+
+          <div class="dropdown-divider"></div>
+
+          <a class="dropdown-item" href="<%= BASE_URL %>">
+            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+            Logout
+          </a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+</header>
+<!-- ======== TOPBAR END ======== -->
+
+<!-- ======== CHANGE PASSWORD MODAL START ======== -->
+<!-- ======== CHANGE PASSWORD MODAL START ======== -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Change Password</h5>
+        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+      </div>
+      <form id="updatePasswordForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="current_password">Current Password</label>
+            <input type="password" id="current_password" name="current_password" class="form-control bg-secondary text-white" required>
+          </div>
+
+          <div class="form-group">
+            <label for="new_password">New Password</label>
+            <input type="password" id="new_password" name="new_password" class="form-control bg-secondary text-white" required>
+          </div>
+
+          <div class="form-group">
+            <label for="confirm_password">Confirm New Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="form-control bg-secondary text-white" required>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-info">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- ======== CHANGE PASSWORD MODAL END ======== -->
+
+<!-- ======== CHANGE PASSWORD MODAL END ======== -->
+
+<script>
+  // Open modal
+  document.getElementById('openProfileModal').addEventListener('click', function(e){
+    e.preventDefault();
+    $('#profileModal').modal('show');
+  });
+
+  // Handle Password Update (normal POST)
+  document.getElementById('updatePasswordForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    const data = {
+      current_password: this.current_password.value,
+      new_password: this.new_password.value,
+      confirm_password: this.confirm_password.value
+    };
+
+    const res = await fetch('<%= BASE_URL %>update-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(data)
+    });
+
+    const result = await res.json();
+	console.log(result);
+    alert(result.message);
+
+    if(result.success){
+      $('#profileModal').modal('hide');
+      this.reset();
+    }
+  });
+</script>

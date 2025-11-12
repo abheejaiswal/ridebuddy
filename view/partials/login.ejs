@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title><%= site_name ? site_name + ' - Login' : 'Admin Login' %></title>
+  <link rel="icon" href="<%= site_logo ? site_logo : 'img/logo/rideshare_logo.png' %>" />
+
+  <!-- CSS Files -->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .card {
+      background-color: #141414;
+      border: 1px solid #00ff88;
+      border-radius: 12px;
+      color: #fff;
+      width: 100%;
+      max-width: 480px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .login-logo img {
+      height: 90px;
+      width: auto;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+      background-color: #1e1e1e;
+      border: 1px solid #00ff88;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .form-control::placeholder {
+      color: #aaa;
+    }
+
+    .form-control:focus {
+      border-color: #00ff88;
+      box-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+    }
+
+    .btn-primary {
+      background-color: #00ff88;
+      color: #000;
+      font-weight: 600;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #00cc70;
+    }
+
+    .text-green {
+      color: #00ff88 !important;
+    }
+
+    .toggle-password {
+      cursor: pointer;
+      color: #00ff88;
+    }
+
+    .alert-danger {
+      background-color: #ff4d4d;
+      border: none;
+      color: white;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+      background-color: #00ff88;
+      border-color: #00ff88;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="login-logo">
+      <% if (site_logo) { %>
+        <img src="<%= site_logo %>" alt="<%= site_name %> Logo" style="margin-top:-20px;" />
+      <% } else { %>
+        <img src="img/logo/rideshare_logo.png" alt="Default Logo" style="margin-top:-20px;" />
+      <% } %>
+    </div>
+
+    <h1 class="text-center text-green" style="margin-top:-30px;">
+      <%= site_name ? site_name + '  Admin Login' : 'RideShare Login' %>
+    </h1>
+
+    <% if (error) { %>
+      <div class="alert alert-danger"><%= error %></div>
+    <% } %>
+
+    <form action="/login_prosess" method="POST" class="login-form">
+      <div class="form-group">
+        <input type="email" name="email" class="form-control" placeholder="Enter Email Address" required maxlength="100"
+          pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" />
+      </div>
+
+      <div class="form-group position-relative">
+        <input type="password" name="password" class="form-control" id="exampleInputPassword" placeholder="Password"
+          required minlength="6" maxlength="20" />
+        <span toggle="#exampleInputPassword"
+          class="fa fa-fw fa-eye toggle-password position-absolute"
+          style="top: 50%; right: 15px; transform: translateY(-50%);"></span>
+      </div>
+
+      <div class="form-group">
+        <div class="custom-control custom-checkbox small">
+          <input type="checkbox" class="custom-control-input" id="customCheck" />
+          <label class="custom-control-label" for="customCheck">Remember Me</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Login</button>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).on('click', '.toggle-password', function () {
+      const input = $($(this).attr('toggle'));
+      const type = input.attr('type') === 'password' ? 'text' : 'password';
+      input.attr('type', type);
+      $(this).toggleClass('fa-eye fa-eye-slash');
+    });
+  </script>
+</body>
+
+</html>

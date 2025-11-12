@@ -1,0 +1,327 @@
+<%- include('partials/sidebar') %>
+<style>
+  .status-dropdown {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .status-dropdown:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  .swal2-title {
+    font-size: 22px !important;
+    font-weight: 600 !important;
+  }
+
+  .swal2-content {
+    font-size: 18px !important;
+    color: #555 !important;
+  }
+
+  .swal2-container {
+    z-index: 99999 !important;
+  }
+
+	
+</style>
+
+<div id="content-wrapper" class="d-flex flex-column">
+  <div id="content">
+    <%- include('partials/header') %>
+
+    <div class="container-fluid" id="container-wrapper">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Users</h1>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 mb-4">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h6 class="m-0 font-weight-bold">All Users</h6>
+              <div class="input-group" style="width: 250px;">
+                <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Search..." onkeyup="filterTable()">
+                <button class="btn btn-outline-secondary btn-sm" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                     <th>ID</th>
+                     <th>Name</th>
+                     <th>Email</th>
+                     <th>Phone</th>
+                     <th>Gender</th>
+                     <th>Dob</th>
+                     <th>Wallet</th>
+					 <th>Due Amount</th>
+
+                     <th>Status</th>
+                     <th>Document</th>
+                     <th>Action </th>
+					 
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (users.length === 0) { %>
+                    <tr>
+                      <td colspan="11" class="text-center">No users found.</td>
+                    </tr>
+                  <% } else { %>
+                    <% users.forEach(user => { %>
+                      <tr>
+                        <td>#<%= user.id %></td>
+                        <td><%= user.name %></td>
+                        <td><%= user.email %></td>
+                        <td><%= user.phone %></td>
+                        <td><%= user.gender %></td>
+                        <td><%= new Date(user.dob).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        }) %></td>
+                        <td><%= user.wallet %></td>
+                        <td><%= user.admin_dues %></td>
+                        <!-- Active/Blocked -->
+                        <td>
+                          <a href="javascript:void(0);" 
+                             class="toggle-status" 
+                             data-userid="<%= user.id %>" 
+                             data-status="<%= user.status %>" 
+                             title="<%= user.status == 1 ? 'Click For Block' : 'Click For Unblock' %>">
+                            <i class="fas <%= user.status == 1 ? 'fa-user-check text-success' : 'fas fa-ban text-danger' %>"></i>
+                          </a>
+                        </td>
+
+                        <!-- Document Status Dropdown -->
+                        <td>
+                          <select class="status-dropdown" data-userid="<%= user.id %>">
+                            <option value="0" <%= user.document_status == 0 ? 'selected' : '' %>>Pending</option>
+                            <option value="1" <%= user.document_status == 1 ? 'selected' : '' %>>Approved</option>
+                            <option value="2" <%= user.document_status == 2 ? 'selected' : '' %>>Rejected</option>
+                          </select>
+                        </td>
+
+					 <td>
+					  <!-- File Icon -->
+					  <a href="/document_detail/<%= user.id %>" title="View Document">
+						<i class="fas fa-file text-secondary"></i>
+					  </a>
+
+					  <!-- Eye Icon -->
+					  <a href="/user_view_more/<%= user.id %>" title="View">
+						<i class="fas fa-eye text-primary ml-2"></i>
+					  </a>
+					</td>
+
+
+            
+						    
+          
+
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Smart Pagination -->
+            <div class="card-footer d-flex justify-content-between align-items-center">
+              <nav>
+                <ul class="pagination mb-0">
+                  <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                    <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                  </li>
+
+                  <% 
+                    let startPage = currentPage - 1;
+                    let endPage = currentPage + 1;
+
+                    if (startPage < 1) {
+                      startPage = 1;
+                      endPage = Math.min(3, totalPages);
+                    }
+
+                    if (endPage > totalPages) {
+                      endPage = totalPages;
+                      startPage = Math.max(1, totalPages - 2);
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
+                  %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                      <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                  <% } %>
+
+                  <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                    <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                  </li>
+                </ul>
+              </nav>
+
+              <span class="text-muted small mt-2">
+                Page <%= currentPage %> of <%= totalPages %>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+  </div>
+</div>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  function filterTable() {
+    const input = document.getElementById('searchInput');
+    const filter = input.value.toLowerCase();
+    const rows = document.querySelectorAll("tbody tr");
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(filter) ? '' : 'none';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const colorMap = {
+      '0': '#fff3cd', // Pending - soft yellow
+      '1': '#d1e7dd', // Approved - soft green
+      '2': '#f8d7da'  // Rejected - soft red
+    };
+
+    // Document Status Dropdown
+    document.querySelectorAll('.status-dropdown').forEach(dropdown => {
+      dropdown.style.setProperty("background-color", colorMap[dropdown.value], "important");
+
+      dropdown.addEventListener('change', function () {
+        const userId = this.getAttribute('data-userid');
+        const status = this.value;
+        const dropdownEl = this;
+
+        fetch(`/update-document-status/${userId}/${status}`, { method: 'GET' })
+          .then(res => res.json())
+          .then(data => {
+            dropdownEl.style.setProperty("background-color", colorMap[status], "important");
+
+            let message = '';
+            if(status == '1') message = '✅ User document has been approved.';
+            else if(status == '2') message = '❌ User document has been rejected.';
+            else message = '⏳ User document is now pending.';
+
+            Swal.fire({
+              icon: status == '2' ? 'error' : 'success',
+              title: message,
+              showConfirmButton: false,
+              timer: 2000,
+              width: '450px',
+              padding: '2em',
+              background: '#f8f9fa',
+              color: '#000',
+              position: 'center'
+            });
+          })
+          .catch(err => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Something went wrong!',
+              text: 'Please try again.',
+              confirmButtonText: 'Close',
+              width: '450px',
+              padding: '2em',
+              background: '#f8f9fa',
+              color: '#000',
+              position: 'center'
+            });
+          });
+      });
+    });
+
+    // User Status Toggle
+    document.querySelectorAll('.toggle-status').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const userId = this.getAttribute('data-userid');
+        const currentStatus = this.getAttribute('data-status');
+        const btnEl = this;
+
+        const url = currentStatus == "1" 
+          ? `/users/block/${userId}` 
+          : `/users/unblock/${userId}`;
+
+        fetch(url, { method: 'GET' })
+          .then(res => res.json())
+          .then(data => {
+            if(data.success) {
+              let message = '';
+              if(currentStatus == "1") {
+                btnEl.setAttribute('data-status', '0');
+                btnEl.setAttribute('title', 'Click For Unblock');
+                btnEl.innerHTML = '<i class="fas fa-ban text-danger"></i>';
+                message = '🚫 User has been blocked.';
+              } else {
+                btnEl.setAttribute('data-status', '1');
+                btnEl.setAttribute('title', 'Click For Block');
+                btnEl.innerHTML = '<i class="fas fa-user-check text-success"></i>';
+                message = '✅ User has been unblocked.';
+              }
+
+              Swal.fire({
+                icon: 'success',
+                title: message,
+                showConfirmButton: false,
+                timer: 2000,
+                width: '450px',
+                padding: '2em',
+                background: '#f8f9fa',
+                color: '#000',
+                position: 'center'
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Something went wrong!',
+                text: 'Please try again.',
+                confirmButtonText: 'Close',
+                width: '450px',
+                padding: '2em',
+                background: '#f8f9fa',
+                color: '#000',
+                position: 'center'
+              });
+            }
+          })
+          .catch(err => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Request failed!',
+              text: 'Please try again.',
+              confirmButtonText: 'Close',
+              width: '450px',
+              padding: '2em',
+              background: '#f8f9fa',
+              color: '#000',
+              position: 'center'
+            });
+          });
+      });
+    });
+
+  });
+</script>

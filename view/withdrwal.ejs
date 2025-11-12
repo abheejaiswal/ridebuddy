@@ -1,0 +1,122 @@
+<%- include('partials/sidebar') %>
+
+<!-- DataTables CSS -->
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"
+/>
+<link
+  href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.20/dist/sweetalert2.min.css"
+  rel="stylesheet"
+/>
+
+<div class="container mt-4">
+  <h3 class="mb-3 text-center">💸 Withdrawal Requests</h3>
+
+  <div class="table-responsive">
+    <table id="withdrawTable" class="table table-striped table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>User ID</th>
+          <th>Account ID</th>
+          <th>Amount (₹)</th>
+          <th>Status</th>
+          <th>Requested At</th>
+          <th>Processed At</th>
+          <th>Remarks</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% documents.forEach((doc) => { %>
+        <tr>
+          <td><%= doc.id %></td>
+          <td><%= doc.user_id %></td>
+          <td><%= doc.account_id || '-' %></td>
+          <td><%= doc.amount %></td>
+          <td>
+            <% if (doc.status === 0) { %>
+              <span class="badge bg-warning text-dark">Pending</span>
+            <% } else if (doc.status === 1) { %>
+              <span class="badge bg-success">Approved</span>
+            <% } else if (doc.status === 2) { %>
+              <span class="badge bg-danger">Rejected</span>
+            <% } else { %>
+              <span class="badge bg-secondary">Unknown</span>
+            <% } %>
+          </td>
+          <td><%= doc.requested_at ? new Date(doc.requested_at).toLocaleString() : '-' %></td>
+          <td><%= doc.processed_at ? new Date(doc.processed_at).toLocaleString() : '-' %></td>
+          <td><%= doc.remarks || '-' %></td>
+          <td>
+            <% if (doc.status === 0) { %>
+              <button class="btn btn-success btn-sm" onclick="updateStatus(<%= doc.id %>, 1)">Approve</button>
+              <button class="btn btn-danger btn-sm" onclick="updateStatus(<%= doc.id %>, 2)">Reject</button>
+            <% } else { %>
+              <span class="text-muted">No Action</span>
+            <% } %>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- JS Dependencies -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.20/dist/sweetalert2.all.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $("#withdrawTable").DataTable({
+      pageLength: 10,
+      order: [[0, "desc"]],
+    });
+  });
+
+  function updateStatus(id, status) {
+    const actionText = status === 1 ? "approve" : "reject";
+
+    Swal.fire({
+      title: `Are you sure you want to ${actionText} this withdrawal?`,
+      input: "text",
+      inputLabel: "Remarks (optional)",
+      inputPlaceholder: "Enter remarks...",
+      showCancelButton: true,
+      confirmButtonText: `Yes, ${actionText}`,
+      cancelButtonText: "Cancel",
+      confirmButtonColor: status === 1 ? "#28a745" : "#dc3545",
+      preConfirm: (remarks) => {
+        return $.ajax({
+          url: "/withdrawal_update",
+          method: "POST",
+          data: { id, status, remarks },
+        })
+          .then((res) => {
+            if (!res.success) {
+              throw new Error(res.message);
+            }
+            return res;
+          })
+          .catch((err) => {
+            Swal.showValidationMessage(err.message);
+          });
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: result.value.message,
+          timer: 2000,
+          showConfirmButton: false,
+        }).then(() => location.reload());
+      }
+    });
+  }
+</script>
+
+<%- include('partials/footer') %>

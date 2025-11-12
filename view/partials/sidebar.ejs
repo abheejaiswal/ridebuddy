@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content=""> 
+  <link href="<%= BASE_URL %>img/logo/rideshare_logo.png" rel="icon">
+  <title>RideShareAdmin - Dashboard</title>
+  <link href="<%= BASE_URL %>vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="<%= BASE_URL %>vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="<%= BASE_URL %>css/ruang-admin.min.css" rel="stylesheet">
+
+  <style>
+    body{
+      margin-top: 70px;
+      overflow-x: hidden;
+    }
+
+    .page-top{
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      width: 100%;
+    }
+
+    .sidebar{
+      position: fixed;
+      top: 70px;
+      left: 0;
+      bottom: 0;
+      overflow-y: auto;
+      width: 250px;
+      z-index: 1000;
+      background-color: #1e1e2f !important;
+    }
+
+    .sidebar .nav-link {
+      color: #ffffff !important;
+      font-weight: 500;
+      padding: 12px 20px;
+    }
+
+    .sidebar .nav-link:hover {
+      background-color: #3a3a55 !important;
+      color: #ffc107 !important;
+    }
+
+    .sidebar .nav-link.active {
+      background-color: #343a40 !important;
+      color: #ffc107 !important;
+    }
+
+    .sidebar .nav-link i {
+      color: #ffffff;
+      margin-right: 8px;
+    }
+
+    .sidebar .sidebar-brand {
+      background-color: #111122;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .sidebar .sidebar-brand-icon img {
+      width: 40px;
+      height: auto;
+    }
+
+    .sidebar .sidebar-brand-text {
+      font-size: 1rem;
+      color: #ffffff;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    #wrapper {
+      padding-left: 250px;
+    }
+
+    .sidebar-divider {
+      border-top: 1px solid #444;
+      margin: 0 1rem;
+    }
+
+    .sidebar-heading {
+      padding: 10px 20px;
+      font-size: 0.75rem;
+      color: #bbb;
+      text-transform: uppercase;
+    }
+    
+    
+.sidebar .nav-link {
+  color: #ffffff !important;
+  font-weight: 500;
+  padding: 12px 20px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Hover effect - green background and text */
+.sidebar .nav-link:hover {
+  background-color: #28a745 !important; /* green background */
+  color: #ffffff !important;
+}
+
+/* Active menu item - bold text */
+.sidebar .nav-link.active {
+  background-color: #1f2d3d !important;
+  font-weight: bold;
+  color: #28a745 !important; /* green text */
+}
+
+  </style>
+</head>
+
+<body id="page-top">
+  <div id="wrapper-container">
+    <!-- Sidebar -->
+    <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
+
+ 
+      <li class="nav-item active">
+        <a class="nav-link" href="/dashboard">
+           <i class="fas fa-fw fa-tachometer-alt text-primary"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+ 
+      <li class="nav-item">
+        <a class="nav-link" href="<%= BASE_URL %>users">
+           <i class="fas fa-fw fa-users text-success"></i>
+          <span>Users</span>
+        </a>
+      </li> 
+    <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>report">
+          <i class="fas fa-stop-circle text-warning"></i>
+          <span>Reports</span>
+        </a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>brand_list">
+          <i class="fas fa-truck-monster text-info"></i>
+          <span>Vehicle Brand</span>
+        </a>
+      </li> 
+      <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>modal_list">
+          <i class="fas fa-truck-monster text-info"></i>
+          <span>Vehicle Modal</span>
+        </a>
+      </li> 
+      <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>vehicle">
+          <i class="fas fa-truck-monster text-info"></i>
+          <span> Users Vehicle List </span>
+        </a>
+      </li> 
+      
+      <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>vehicle_color">
+          <i class="fas fa-truck-monster text-info"></i>
+          <span>Vehicle Color</span>
+        </a>
+      </li> 
+      
+      <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>ride-details">
+          <i class="fas fa-route text-primary"></i>
+          <span>Ride Details</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>ridebooking_details">
+         <i class="fas fa-calendar-check text-success"></i>
+          <span>Ride Booking</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>feedback">
+          <i class="fas fa-comments text-danger"></i>
+          <span>Feedback</span>
+        </a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>setting">
+          <i class="fas fa-comments text-danger"></i>
+          <span>Setting</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>bank_details">
+             <i class="fas fa-university text-secondary"></i>
+          <span>Bank Details</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>Payment">
+         <i class="fas fa-credit-card text-warning"></i>
+          <span>Payment</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>notification">
+          <i class="fas fa-bell text-danger"></i>
+          <span>User Notification</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>duepayment">
+        <i class="fas fa-file-invoice-dollar text-info"></i>
+          <span>Due Payment</span>
+        </a>
+      </li>
+          <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>withdrwal">
+          <i class="fas fa-stop-circle text-warning"></i>
+          <span>Withdrawal History</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>fare-rules">
+          <i class="fas fa-balance-scale text-success"></i>
+          <span>Fare Rules</span>
+        </a>
+      </li>
+
+
+     <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>commission">
+          <i class="fas fa-stop-circle text-warning"></i>
+          <span>Commission</span>
+        </a>
+      </li>
+      
+      
+       
+     
+     
+     <li class="nav-item">
+        <a class="nav-link" href="<%=BASE_URL %>withdrwal">
+          <i class="fas fa-stop-circle text-warning"></i>
+          <span>Withdrawal History</span>
+        </a>
+      </li>
+     
+     
+    </ul>
+    
+    <script>
+  function updateWrapperId() {
+    const wrapper = document.getElementById('wrapper-container');
+    
+    // Check if screen width is 768px or more (desktop)
+    if (window.innerWidth >= 768) {
+      wrapper.setAttribute('id', 'wrapper');
+    } else {
+      wrapper.setAttribute('id', 'wrapper-container');
+    }
+  }
+
+  // Initial check
+  updateWrapperId();
+
+  // Listen for resize
+  window.addEventListener('resize', updateWrapperId);
+</script>

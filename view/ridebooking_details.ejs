@@ -1,0 +1,184 @@
+<%- include('partials/sidebar') %>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
+<style>
+  .table-hover tbody tr:hover{
+    background-color: #f0f8ff !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .table-striped tbody tr:nth-of-type(odd){
+    background-color: #f9f9f9;
+  }
+
+  .thead-light th{
+    background-color: #e9ecef;
+    font-weight: 600;
+    color: #495057;
+  }
+
+  .table td,
+  .table th {
+    vertical-align: middle;
+    padding: 12px;
+  }
+
+  .badge{
+    font-size: 0.75rem;
+    padding: 0.4em 0.65em;
+    border-radius: 0.35rem;
+  }
+
+  .card:hover{
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    transition: 0.3s ease;
+  }
+
+  /* Pagination Styling */
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.5em 1em;
+    margin-left: 3px;
+    border-radius: 0.25rem;
+    background: #f8f9fc;
+    border: 1px solid #d1d3e2;
+    color: #4e73df !important;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #4e73df !important;
+    color: white !important;
+  }
+
+  .read-more-text {
+    display: none;
+  }
+
+  .read-more-btn {
+    color: #007bff;
+    cursor: pointer;
+  }
+</style>
+
+<div id="content-wrapper" class="d-flex flex-column">
+  <div id="content">
+    <%- include('partials/header') %>
+
+    <div class="container-fluid" id="container-wrapper">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Ride Bookings Details</h1>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 mb-4">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h6 class="m-0 font-weight-bold">All Ride Bookings</h6>
+            </div>
+
+            <div class="table-responsive">
+              <table id="dataTable" class="table table-hover table-striped align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>User Name</th>
+                    <th>Ride ID</th>
+                    <th>Seat Booked</th>
+                    <th>Status</th>
+                    <th>Fare</th>
+                    <th>Start Address</th>
+                    <th>End Address</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (documents && documents.length > 0) { %>
+                    <% documents.forEach((ride_booking) => { %>
+                      <tr>
+                        <td><%= ride_booking.id %></td>
+                        <td><%= ride_booking.user_name %></td>
+                        <td><%= ride_booking.ride_id %></td>
+                        <td><%= ride_booking.seats_booked %></td>
+                        <td>
+                          <% if (ride_booking.status == 0) { %>
+                            <span class="badge badge-warning">Pending</span>
+                          <% } else if (ride_booking.status == 1) { %>
+                            <span class="badge badge-success">Confirmed </span>
+                          <% } else if (ride_booking.status == 2) { %>
+                            <span class="badge badge-danger">Cancelled by user</span>
+                          <% } else if (ride_booking.status == 3) { %>
+                            <span class="badge badge-secondary">Cancelled by driver</span>
+                          <% } else if (ride_booking.status == 4) { %>
+                            <span class="badge badge-info">Completed </span>
+                          <% } else if (ride_booking.status == 5) { %>
+                            <span class="badge badge-primary">Picked up</span>
+                          <% } else if (ride_booking.status == 6) { %>
+                            <span class="badge badge-dark">User Not Reach</span>
+                          <% } else if (ride_booking.status == 7) { %>
+                            <span class="badge badge-success">Completed</span>
+                          <% } else { %>
+                            <span class="badge badge-light">Unknown</span>
+                          <% } %>
+                        </td>
+
+                        <td><%= ride_booking.fare %></td>
+                        <td><%= ride_booking.start_address %></td>
+                        <td><%= ride_booking.end_address %></td>
+                      </tr>
+                    <% }) %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="8" class="text-center">No ride bookings found.</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+  </div>
+</div>
+
+<!-- jQuery & DataTables -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    if (!$.fn.DataTable.isDataTable('#dataTable')) {
+      $('#dataTable').DataTable({
+        pageLength: 10,
+        lengthMenu: [5, 10, 25, 50, 100],
+        ordering: true,
+        info: true,
+        language: {
+          search: '',
+          searchPlaceholder: "Search...",
+          lengthMenu: "Show _MENU_ entries",
+          info: "Showing _START_ to _END_ of _TOTAL_ entries",
+          paginate: {
+            previous: "Previous",
+            next: "Next"
+          }
+        }
+      });
+    }
+  });
+
+  function toggleReadMore(btn) {
+    const text = btn.previousElementSibling;
+    if (text.style.display === "none" || text.style.display === "") {
+      text.style.display = "inline";
+      btn.textContent = "Read Less";
+    } else {
+      text.style.display = "none";
+      btn.textContent = "Read More";
+    }
+  }
+</script>

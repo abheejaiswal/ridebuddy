@@ -1,0 +1,93 @@
+<%- include('partials/sidebar') %>
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <%- include('partials/header') %>
+        <!-- Header-->
+
+        <div class="breadcrumbs">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Dashboard</h1>
+                    </div>
+                </div>
+            </div>  
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <a href="/users/add" class="btn btn-primary btn-sm">
+                                <i class="fa fa-plus"></i> Add User
+                            </a>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content mt-3">
+            <div class="animated fadeIn">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Data Table</strong>
+                            </div>
+                            <div class="card-body">
+                                <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                          <th>#ID</th>
+                                          <th>Name</th>
+                                          <th>Username</th>
+                                          <th>Role</th>
+                                          <th>Created By</th>
+                                          <th>Country</th>
+                                          <th>Contact</th>
+                                          <th>Status</th>
+                                          <th>Created At</th>
+                                          <th>Actions</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td>1</td>
+                                          <td>Ravi Singh</td>
+                                          <td>ravi123</td>
+                                          <td>Country Agent</td>
+                                          <td>Admin</td>
+                                          <td>India</td>
+                                          <td>+91 9000000001</td>
+                                          <td><span class="badge badge-success">Active</span></td>
+                                          <td>2024-01-12</td>
+                                          <td>
+                                            <a class="btn btn-info btn-sm"><i class="fa fa-eye"></i></a>
+                                            <a class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i></a>
+                                            <a class="btn btn-danger btn-sm"><i class="fa fa-ban"></i></a>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+
+    <%- include('partials/footer') %>
